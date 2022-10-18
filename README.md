@@ -1,6 +1,14 @@
 # Warcraft 3 - Project:Survive - Prologue Codebase
 <hr/>
 
+## Description
+
+Project: Survive - Prologue a is custom Warcraft 3 map (1.33 Compatible) intended for HD Assets but also work well in SD.
+
+W3E (lua) was developped for the project as a mean to quickly integrate new logic to a map.
+
+The code is a snapshot from Survivor.v0.1.2819 (Prologue Version)
+
 ## Informations
 
 This project uses Amalg to reduce iteration cost of working outside of War3 Editor.
@@ -16,7 +24,7 @@ They are temporarily replaced with a working system.
 
 #### [Amalg](https://github.com/siffiejoe/lua-amalg) - created by siffiejoe
 
-Will assemble all lua files based on require operations
+Will assemble all lua files based on require operations (create a amalg/ folder and import amalg in here)
 
 ## Generate code
 
@@ -26,3 +34,5 @@ Run Generate.bat with amalg installed within this folder `.git/amalg/amalg.lua`
 Then, copy content of the generated `war3_code.lua` file within the editor
 
 Make sure the amalg_plugin.lua is also in the editor and before the generated code.
+
+a test map is provided (maps/TestMap.w3x) to demonstrate the use of W3E.
