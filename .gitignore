@@ -1,0 +1,6 @@
+# generated
+output/*.lua
+
+# Amalg
+amalg/
+amalg.cache
