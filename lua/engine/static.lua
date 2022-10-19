@@ -102,7 +102,16 @@ function SetPlayerSurvivor(whichPlayer, whichUnit)
         GameNotice(Cinematic.PlayerName(whichPlayer) ..  " has been killed!")
         Equipment.Destroy(whichPlayer)
         Camp.Terminate(whichPlayer, "Camp has been destroyed!")
+        local world_zone = WorldRegion.GetSurvivorWorldzone(whichUnit)
+        local survivors = WorldRegion.GetWorldzoneSurvivors(world_zone)
         WorldRegion.RemoveSurvivor(whichUnit)
+
+        for i=1,#survivors do
+            local owner = GetOwningPlayer(survivors[i])
+            if owner ~= whichPlayer then
+                UnitShareVision(survivors[i], whichPlayer, true)
+            end
+        end
     end)
 
 end

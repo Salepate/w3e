@@ -61,8 +61,8 @@ format_player_name = function(playerName)
     local nameLength = #playerName
     local name
 
-    if nameLength > 5 and playerName:sub(nameLength - 5, nameLength - 5) == "#"  then
-        name = playerName:sub(1, nameLength - 6)
+    if nameLength > 5 and playerName:sub(nameLength - 4, nameLength - 4) == "#"  then
+        name = playerName:sub(1, nameLength - 5)
     else
         name = playerName
     end

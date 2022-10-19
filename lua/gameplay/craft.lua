@@ -139,11 +139,11 @@ on_upgrade_requested = function()
             if Craft.HasIngredients(survivor, craft_index) then
                 validate_train = true
             else
-                FloatText.Create(station_unit, "Missing Ingredients!", 1.5, FloatText.Red, true)
+                FloatText.Create(survivor, GameText.CRAFT_FLOAT_NOINGREDIENTS, 1.5, FloatText.Red, true)
             end
         end
     else
-        FloatText.Create(station_unit, "Too far from the structure!", 1.5, FloatText.Red, true)
+        FloatText.Create(survivor, GameText.CRAFT_FLOAT_STATIONDISTANCE, 1.5, FloatText.Red, true)
     end
 
     if not validate_train then
@@ -186,11 +186,11 @@ on_craft_requested = function() -- Callback: Unit Starts training
             if Craft.HasIngredients(survivor, craft_index) then
                 validate_train = true
             else
-                FloatText.Create(station_unit, "Missing Ingredients!", 1.5, FloatText.Red, true)
+                FloatText.Create(survivor, GameText.CRAFT_FLOAT_NOINGREDIENTS, 1.5, FloatText.Red, true)
             end
         end
     else
-        FloatText.Create(station_unit, "Too far from the station!", 1.5, FloatText.Red, true)
+        FloatText.Create(survivor, GameText.CRAFT_FLOAT_STATIONDISTANCE, 1.5, FloatText.Red, true)
     end
 
     if not validate_train then
@@ -208,12 +208,14 @@ on_craft_processed = function()
     if craft_index < 1 then
         EngineError("Unknown Recipe")
     else
-        if Craft.HasIngredients(survivor, craft_index) then
+        if DistanceBetweenPoints(GetUnitLoc(survivor), GetUnitLoc(station_unit)) > BASE_CRAFT_DISTANCE then
+            FloatText.Create(survivor, GameText.CRAFT_FLOAT_STATIONDISTANCE, 1.5, FloatText.Red, true)
+        elseif Craft.HasIngredients(survivor, craft_index) then
             Craft.ConsumeIngredients(survivor, craft_index)
             local trainedUnit_loc = GetUnitLoc(GetTrainedUnit())
             local whichItem =  Item.Spawn(p, trainedUnit_loc, udg_Craft_ItemResult[craft_index], udg_Craft_ItemCount[craft_index] or 1)
         else
-            GameMessageError("|cffff4444Missing Ingredients|r", p)
+            FloatText.Create(survivor, GameText.CRAFT_FLOAT_NOINGREDIENTS, 1.5, FloatText.Red, true)
         end
     end
     RemoveUnit(GetTrainedUnit())

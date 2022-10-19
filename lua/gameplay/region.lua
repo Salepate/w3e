@@ -28,13 +28,21 @@ Module("WorldRegion",
         return region_counters[worldzone] or 0
     end,
 
-    RemoveSurvivor = function(unit)
-        if survivor_map[unit] then
-            local reg = survivor_map[unit]
+    GetSurvivorWorldzone = function(survivor)
+        return survivor_map[survivor] or 0
+    end,
+
+    GetWorldzoneSurvivors = function(world_zone)
+        return WorldRegion.PlayerGroups[world_zone]
+    end,
+
+    RemoveSurvivor = function(survivor)
+        if survivor_map[survivor] then
+            local reg = survivor_map[survivor]
             local group = WorldRegion.PlayerGroups[reg]
             region_counters[reg] = region_counters[reg] - 1
-            survivor_map[unit] = nil
-            remove_from_group(group, unit)
+            survivor_map[survivor] = nil
+            remove_from_group(group, survivor)
             if region_counters[reg] == 0 then
                 disable_region(reg)
             end
