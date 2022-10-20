@@ -213,7 +213,16 @@ on_craft_processed = function()
         elseif Craft.HasIngredients(survivor, craft_index) then
             Craft.ConsumeIngredients(survivor, craft_index)
             local trainedUnit_loc = GetUnitLoc(GetTrainedUnit())
-            local whichItem =  Item.Spawn(p, trainedUnit_loc, udg_Craft_ItemResult[craft_index], udg_Craft_ItemCount[craft_index] or 1)
+            local craft_count = udg_Craft_ItemCount[craft_index] or 1
+            local craft_item = udg_Craft_ItemResult[craft_index]
+            local whichItem =  Item.Give(survivor, craft_item, craft_count)
+            if whichItem then
+                if craft_count == 1 then
+                    FloatText.Create(survivor, GameText.CRAFT_FLOAT_OBTAIN  .. GetObjectName(craft_item), 1.5, FloatText.Blue, true)
+                else
+                    FloatText.Create(survivor, GameText.CRAFT_FLOAT_OBTAIN  .. GetObjectName(craft_item) .. " |cffffcc00x" .. craft_count .. "|r", 1.5, FloatText.Blue, true)
+                end
+            end
         else
             FloatText.Create(survivor, GameText.CRAFT_FLOAT_NOINGREDIENTS, 1.5, FloatText.Red, true)
         end

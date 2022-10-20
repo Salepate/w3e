@@ -154,27 +154,39 @@ end
 on_construct_start = function()
     local u = GetConstructingStructure()
     local p = GetOwningPlayer(u)
-    local cancel = true
+    local craft_idx = Craft.GetIndexByUnitConstruct(GetUnitTypeId(u))
+    local cancel = nil
 
-    if IsUnitType(u, UNIT_TYPE_TOWNHALL) then
-        cancel = false
-    elseif active_camps[p] ~= nil then
-        local max_dist = get_build_distance(GetUnitTypeId(active_camps[p].Camp), true)
-        local dist = DistanceBetweenPointsSquared(GetUnitLoc(active_camps[p].Camp), GetUnitLoc(u))
-        if dist <= max_dist then
-            cancel = false
+    if craft_idx < 1 then -- only apply to defined craft entries
+        return
+    end
+
+    if active_camps[p] ~= nil then
+        local is_inside = Hideout.IsInside(GetPlayerSurvivor(p))
+        if is_inside and not Craft.HasProperty(craft_idx, Globals.Const_Craft_Inside) then
+            cancel = GameText.BUILD_FLOAT_NOT_INSIDE
+        elseif not is_inside and not Craft.HasProperty(craft_idx, Globals.Const_Craft_Outside) then
+            cancel = GameText.BUILD_FLOAT_NOT_OUTSIDE
+        end
+
+        if not cancel and not is_inside then -- outside check distance
+            local max_dist = get_build_distance(GetUnitTypeId(active_camps[p].Camp), true)
+            local dist = DistanceBetweenPointsSquared(GetUnitLoc(active_camps[p].Camp), GetUnitLoc(u))
+            if dist > max_dist then
+                cancel = GameText.BUILD_FLOAT_CAMPDISTANCE
+            end
+        end
+    else
+        if not IsUnitType(u, UNIT_TYPE_TOWNHALL) then
+            cancel = GameText.BUILD_FLOAT_CAMP_REQUIRED
         end
     end
 
     if cancel then
-        FloatText.Create(u, "Must build within camp range!", 1.5, FloatText.Red, p)
+        FloatText.Create(GetPlayerSurvivor(p), cancel, 1.5, FloatText.Red, p)
         -- GameMessageError("Cannot construct here.", GetOwningPlayer(u))
-        local craft_idx = Craft.GetIndexByUnitConstruct(GetUnitTypeId(u))
-        if craft_idx > 0 then
-            Item.Give(u, Globals.Craft_ItemResult[craft_idx], 1)
-        end
+        Item.Give(u, Globals.Craft_ItemResult[craft_idx], 1)
         RemoveUnit(u)
-
     end
 end
 
