@@ -162,19 +162,10 @@ on_construct_start = function()
     end
 
     if active_camps[p] ~= nil then
-        local is_inside = Hideout.IsInside(GetPlayerSurvivor(p))
-        if is_inside and not Craft.HasProperty(craft_idx, Globals.Const_Craft_Inside) then
-            cancel = GameText.BUILD_FLOAT_NOT_INSIDE
-        elseif not is_inside and not Craft.HasProperty(craft_idx, Globals.Const_Craft_Outside) then
-            cancel = GameText.BUILD_FLOAT_NOT_OUTSIDE
-        end
-
-        if not cancel and not is_inside then -- outside check distance
-            local max_dist = get_build_distance(GetUnitTypeId(active_camps[p].Camp), true)
-            local dist = DistanceBetweenPointsSquared(GetUnitLoc(active_camps[p].Camp), GetUnitLoc(u))
-            if dist > max_dist then
-                cancel = GameText.BUILD_FLOAT_CAMPDISTANCE
-            end
+        local max_dist = get_build_distance(GetUnitTypeId(active_camps[p].Camp), true)
+        local dist = DistanceBetweenPointsSquared(GetUnitLoc(active_camps[p].Camp), GetUnitLoc(u))
+        if dist > max_dist then
+            cancel = GameText.BUILD_FLOAT_CAMPDISTANCE
         end
     else
         if not IsUnitType(u, UNIT_TYPE_TOWNHALL) then
