@@ -101,6 +101,7 @@ RegisterSystem(function()
                     end
                 end
                 ws.demand = ws.demand + demand
+                entity.active = entity.active + (entity.IsProducing and 1 or 0)
             end
         end
     end

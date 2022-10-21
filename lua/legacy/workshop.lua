@@ -6,6 +6,7 @@ Workshop = (function()
         local unitTickListeners = {}
         local workshops = {} -- player industries
         local active_ws = {} -- array
+        local entities = {} -- array
 
         local get_player_workshop = function(player)
             if workshops[player] == nil then
@@ -19,8 +20,10 @@ Workshop = (function()
 
         local create_workshop_entity = function(player, unit)
             local ws = get_player_workshop(player)
-            ws.units[unit] = {}
-            return ws.units[unit]
+            local obj = { unit = unit, active = 0, working = false}
+            ws.units[unit] = obj
+            table.insert(entities, obj)
+            return obj
         end
 
 
@@ -65,6 +68,22 @@ Workshop = (function()
             OnTick = function()
                 for i=1,#unitTickListeners do
                     unitTickListeners[i]()
+                end
+
+                for i=1,#entities do
+                    local was_working = entities[i].working
+                    local is_working = entities[i].active > 0
+        
+                    if was_working ~= is_working then
+                        entities[i].working = is_working
+                        local anim = "idle"                
+                        if is_working then
+                            anim = "work"
+                        end
+                        SetUnitAnimation(entities[i].unit, anim)
+                    end
+        
+                    entities[i].active = 0
                 end
             end,
         }
